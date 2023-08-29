@@ -1,5 +1,11 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { connectDB } from "./config/db";
+import "colors";
+import dotenv from "dotenv";
+
+dotenv.config();
+await connectDB();
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -19,16 +25,20 @@ const typeDefs = `#graphql
   type Query {
     books(author: String): [Book]
   }
+
+  type Mutation {
+    addBook(title: String, author: String): Book
+  }
 `;
 
 const books = [
   {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
+    title: "The Awakening",
+    author: "Kate Chopin",
   },
   {
-    title: 'City of Glass',
-    author: 'Paul Auster',
+    title: "City of Glass",
+    author: "Paul Auster",
   },
 ];
 
@@ -38,8 +48,8 @@ const resolvers = {
   Query: {
     books: (parent, args) => {
       console.log(args.author);
-      return books.filter((book) => book.author.match(args.author))
-    }
+      return books.filter((book) => book.author.match(args.author));
+    },
   },
 };
 
@@ -55,7 +65,7 @@ const server = new ApolloServer({
 //  2. installs your ApolloServer instance as middleware
 //  3. prepares your app to handle incoming requests
 const { url } = await startStandaloneServer(server, {
-  listen: { port: 4000 },
+  listen: { port: Number(process.env.PORT) },
 });
 
 console.log(`🚀  Server ready at: ${url}`);
