@@ -26,8 +26,6 @@ function createAuthors() {
   }));
 }
 
-// console.log(authorIds);
-
 function createBook() {
   return {
     title: faker.word.noun(),
@@ -37,14 +35,13 @@ function createBook() {
 
 const authors = createAuthors();
 const books = faker.helpers.multiple(createBook, { count: 50 });
-console.log(authors, books);
 
 async function writeFakeData() {
   try {
     await connectDB();
     await Author.insertMany(authors);
     await Book.insertMany(books);
-    console.log("Fake data has written!".green);
+    console.log("Fake data has written!".green.bold);
   } catch (e) {
     console.log(e);
   }
