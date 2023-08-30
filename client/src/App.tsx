@@ -1,11 +1,20 @@
 import "./App.css";
-import DisplayLocations from "./components/DisplayBooks";
+import Header from "./features/Header";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <DisplayLocations />
-    </>
+    <div>
+      <div className="bg-gray-800 py-8">
+        <Header />
+      </div>
+
+      <div className="py-8">
+        <div className="container h-full">
+          <Outlet />
+        </div>
+      </div>
+    </div>
   );
 }
 

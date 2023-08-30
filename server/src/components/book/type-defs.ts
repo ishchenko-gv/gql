@@ -3,5 +3,7 @@ export default `#graphql
     _id: ID!
     title: String!
     authors: [Author]!
+    released: String
+    coverImgUrl: String
   }
 `;
