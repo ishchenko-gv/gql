@@ -4,22 +4,24 @@ import { connectDB } from "./config/db";
 import "colors";
 import dotenv from "dotenv";
 
-dotenv.config();
-await connectDB();
-
 import author from "./components/author";
 import book from "./components/book";
 
+dotenv.config();
+await connectDB();
+
 const queryTypeDefs = `#graphql
   type Query {
-    authors: [Author!]!
     author(id: ID!): Author
-    books: [Book!]!
+    authors: [Author!]!
     book(id: ID!): Book
+    books: [Book!]!
+    booksByAuthor(authorId: ID!): [Book]
   }
 
   type Mutation {
-    addBook(title: String, authors: [ID]): Book
+    addAuthor(name: String!, bornDate: String, diedDate: String): Author!
+    addBook(title: String!, authors: [ID!]!): Book
   }
 `;
 
@@ -27,9 +29,15 @@ const server = new ApolloServer({
   typeDefs: [queryTypeDefs, author.typeDefs, book.typeDefs],
   resolvers: {
     Query: {
+      author: author.resolvers.author,
       authors: author.resolvers.authors,
-      books: book.resolvers.books,
       book: book.resolvers.book,
+      books: book.resolvers.books,
+      booksByAuthor: book.resolvers.booksByAuthor,
+    },
+    Mutation: {
+      addAuthor: author.resolvers.addAuthor,
+      addBook: book.resolvers.addBook,
     },
   },
 });
