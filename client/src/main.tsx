@@ -3,7 +3,11 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import BooksPage from "./pages/BooksPage";
 import BookPage from "./pages/BookPage";
 import AuthorsPage from "./pages/AuthorsPage";
@@ -24,15 +28,19 @@ const router = createBrowserRouter([
         element: <AuthorsPage />,
       },
       {
-        path: "authors/:id",
+        path: "author/:id",
         element: <AuthorPage />,
       },
       {
-        path: "books",
+        path: "/books",
+        element: <Navigate to="/books/1" />,
+      },
+      {
+        path: "books/:page",
         element: <BooksPage />,
       },
       {
-        path: "books/:id",
+        path: "book/:id",
         element: <BookPage />,
       },
     ],

@@ -19,7 +19,7 @@ export default function Header() {
         </div>
         <ul className="flex ml-40">
           <li>
-            <Link to="/books">
+            <Link to="/books/1">
               <span className={getClassNames("/books")}>Books</span>
             </Link>
           </li>

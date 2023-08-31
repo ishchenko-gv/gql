@@ -1,5 +1,5 @@
 import "./App.css";
-import Header from "./features/Header";
+import Header from "./components/Header";
 import { Outlet } from "react-router-dom";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
         <Header />
       </div>
 
-      <div className="py-8">
+      <div className="py-16">
         <div className="container h-full">
           <Outlet />
         </div>
