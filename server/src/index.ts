@@ -15,7 +15,7 @@ const queryTypeDefs = `#graphql
     author(id: ID!): Author
     authors: [Author!]!
     book(id: ID!): Book
-    books: [Book!]!
+    books(page: Int, pageSize: Int): BooksResponse 
     booksByAuthor(authorId: ID!): [Book]
   }
 

@@ -36,6 +36,7 @@ function createAuthors() {
 function createBook() {
   return {
     title: faker.word.noun(),
+    description: faker.lorem.paragraph({ min: 10, max: 20 }),
     authors: [
       getRandomAuthor(),
       ...(Math.random() > 0.5 ? [getRandomAuthor()] : []),

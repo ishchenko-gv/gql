@@ -5,8 +5,15 @@ export async function book(_: {}, args: { id: ObjectId }) {
   return Book.findById(args.id).populate("authors");
 }
 
-export async function books() {
-  return Book.find().populate("authors");
+export async function books(_: {}, args: { page: number; pageSize: number }) {
+  const items = await Book.find()
+    .limit(args.pageSize * 1)
+    .skip((args.page - 1) * args.pageSize)
+    .populate("authors");
+
+  const totalCount = await Book.countDocuments();
+
+  return { items, totalCount };
 }
 
 export async function booksByAuthor(_: {}, args: { authorId: ObjectId }) {
