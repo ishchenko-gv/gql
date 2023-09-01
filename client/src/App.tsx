@@ -8,7 +8,6 @@ function App() {
       <div className="bg-gray-800 py-8">
         <Header />
       </div>
-
       <div className="py-16">
         <div className="container h-full">
           <Outlet />

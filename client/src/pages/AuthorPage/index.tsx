@@ -47,7 +47,7 @@ export default function AuthorPage() {
         imgUrl={data.author.photoImgUrl}
       />
       <div className="mt-16">
-        <h3 className="text-2xl mb-4">By author</h3>
+        <h3 className="text-2xl mb-8">By author</h3>
         {booksLoading ? (
           <p>loading...</p>
         ) : booksError ? (
