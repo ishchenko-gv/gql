@@ -1,9 +1,9 @@
 import { Document, Schema, model } from "mongoose";
 
-export type UserDocument = Document & {
+export interface UserDocument extends Document {
   email: string;
   hashedPassword: string;
-};
+}
 
 const userSchema = new Schema<UserDocument>(
   {

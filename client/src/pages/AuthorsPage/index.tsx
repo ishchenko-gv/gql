@@ -28,7 +28,7 @@ export default function AuthorsPage() {
           return 0;
         })
         .map((author: Author) => (
-          <Link to={`/author/${author._id}`}>
+          <Link to={`/author/${author._id}`} key={author._id}>
             <AuthorCard author={author} />
           </Link>
         ))}

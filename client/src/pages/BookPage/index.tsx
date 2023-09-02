@@ -37,7 +37,7 @@ export default function BookPage() {
       <h3 className="mt-12 text-2xl">Authors</h3>
       <div className="mt-8 grid grid-cols-3 gap-8">
         {data.book.authors.map((author: Author) => (
-          <Link to={`/author/${author._id}`}>
+          <Link to={`/author/${author._id}`} key={author._id}>
             <AuthorCard author={author} />
           </Link>
         ))}

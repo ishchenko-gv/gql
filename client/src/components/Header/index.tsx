@@ -1,11 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import { BsBook } from "react-icons/bs";
+import { BiLogIn } from "react-icons/bi";
+import Loader from "../Loader";
+import UserMenu from "../UserMenu";
+import { useContext } from "react";
+import { UserContext } from "../../common/user";
 
 export default function Header() {
+  const userCtx = useContext(UserContext);
   const { pathname } = useLocation();
 
   const getClassNames = (path: string) =>
-    `link ${pathname.startsWith(path) ? "link-primary" : ""}`;
+    `${pathname.startsWith(path) ? "link-secondary" : ""}`;
 
   return (
     <header>
@@ -17,7 +23,7 @@ export default function Header() {
             </span>
           </Link>
         </div>
-        <ul className="flex ml-40">
+        <ul className="flex ml-40 self-center">
           <li>
             <Link to="/books/1">
               <span className={getClassNames("/books")}>Books</span>
@@ -29,6 +35,23 @@ export default function Header() {
             </Link>
           </li>
         </ul>
+        <div className="ml-auto text-2xl leading-reset self-center">
+          {userCtx.isLoading ? (
+            <Loader />
+          ) : userCtx.user ? (
+            <UserMenu />
+          ) : (
+            <button
+              tabIndex={0}
+              className="btn btn-sm btn-ghost btn-circle"
+              onClick={() => userCtx.showSigninModal()}
+            >
+              <div className="w-10 rounded-full flex justify-center align-center text-2xl">
+                <BiLogIn />
+              </div>
+            </button>
+          )}
+        </div>
       </nav>
     </header>
   );

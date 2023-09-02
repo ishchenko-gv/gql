@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import bcrypt from "bcryptjs";
 
-import User from "../model";
+import User, { UserDocument } from "../model";
 
 const router = express.Router();
 
@@ -33,16 +33,27 @@ router.post("/signup", async (req, res) => {
   });
 });
 
-router.post(
-  "/signin",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureMessage: true,
-  })
-);
+router.post("/signin", passport.authenticate("local"), (req, res) => {
+  res
+    .status(200)
+    .json({
+      _id: (req.user as UserDocument)?._id,
+      email: (req.user as UserDocument)?.email,
+    });
+});
 
 router.get("/me", (req, res) => {
-  res.send(req.user);
+  res.json({
+    _id: (req.user as UserDocument)?._id,
+    email: (req.user as UserDocument)?.email,
+  });
+});
+
+router.post("/signout", (req, res, next) => {
+  req.logOut((err) => {
+    if (err) return next(err);
+    res.send();
+  });
 });
 
 export default router;

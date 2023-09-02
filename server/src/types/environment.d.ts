@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { UserDocument } from "../components/user/model";
 
 export {};
@@ -9,7 +10,10 @@ declare global {
     }
   }
 
-  // namespace Express {
-  //   interface User extends UserDocument {}
-  // }
+  namespace Express {
+    interface User extends UserDocument {
+      _id: ObjectId;
+      email: string;
+    }
+  }
 }
