@@ -1,3 +1,5 @@
+import { UserDocument } from "../components/user/model";
+
 export {};
 
 declare global {
@@ -6,4 +8,8 @@ declare global {
       MONGO_URI: string;
     }
   }
+
+  // namespace Express {
+  //   interface User extends UserDocument {}
+  // }
 }

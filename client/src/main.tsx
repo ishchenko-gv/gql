@@ -14,7 +14,7 @@ import AuthorsPage from "./pages/AuthorsPage";
 import AuthorPage from "./pages/AuthorPage";
 
 const client = new ApolloClient({
-  uri: "http://localhost:5005",
+  uri: "http://localhost:5005/graphql",
   cache: new InMemoryCache(),
 });
 

@@ -1,11 +1,19 @@
+import http from "http";
+import express from "express";
+import session, { Store } from "express-session";
+import cors from "cors";
+import bodyParser from "body-parser";
 import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
-import { connectDB } from "./config/db";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { connectDB, getSessionStore } from "./config/db";
 import "colors";
 import dotenv from "dotenv";
 
+import { authRouter, setupAuthStrategies } from "./components/user";
 import author from "./components/author";
 import book from "./components/book";
+import passport from "passport";
 
 dotenv.config();
 await connectDB();
@@ -25,7 +33,10 @@ const queryTypeDefs = `#graphql
   }
 `;
 
-const server = new ApolloServer({
+const app = express();
+const httpServer = http.createServer(app);
+
+const apolloServer = new ApolloServer({
   typeDefs: [queryTypeDefs, author.typeDefs, book.typeDefs],
   resolvers: {
     Query: {
@@ -40,10 +51,34 @@ const server = new ApolloServer({
       addBook: book.resolvers.addBook,
     },
   },
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
-const { url } = await startStandaloneServer(server, {
-  listen: { port: Number(process.env.PORT) },
-});
+await apolloServer.start();
 
-console.log(`🚀  Server ready at: ${url}`);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cors());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    store: getSessionStore() as unknown as Store,
+  })
+);
+
+setupAuthStrategies();
+
+app.use(passport.authenticate("session"));
+
+app.use("/auth", authRouter);
+app.use("/graphql", expressMiddleware(apolloServer));
+
+await new Promise((resolve) =>
+  httpServer.listen({ port: process.env.PORT }, () => {
+    console.log(`Server is running on http://localhost:${process.env.PORT}`);
+    resolve(null);
+  })
+);
