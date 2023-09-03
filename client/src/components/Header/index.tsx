@@ -55,7 +55,7 @@ export default function Header() {
             <button
               tabIndex={0}
               className="btn btn-sm btn-ghost btn-circle"
-              onClick={() => userCtx.showSigninModal()}
+              onClick={() => userCtx.showLoginFormModal()}
             >
               <div className="w-10 rounded-full flex justify-center align-center text-2xl">
                 <BiLogIn />

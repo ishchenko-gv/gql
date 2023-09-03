@@ -13,8 +13,8 @@ export type UserCtx = {
   user: User | null;
   isLoading: boolean;
   errors: UserApiError[];
-  signinModalRef: RefObject<HTMLDialogElement>;
-  showSigninModal: () => void;
+  loginFormModalRef: RefObject<HTMLDialogElement>;
+  showLoginFormModal: () => void;
   signup: (email: string, password: string) => Promise<void>;
   signin: (email: string, password: string) => Promise<void>;
   signout: () => Promise<void>;

@@ -5,14 +5,14 @@ export default function useSetupUserCtx() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [errors, setErrors] = useState([]);
-  const signinModalRef = useRef<HTMLDialogElement>(null);
+  const loginFormModalRef = useRef<HTMLDialogElement>(null);
 
-  function showSigninModal() {
-    signinModalRef.current?.showModal();
+  function showLoginFormModal() {
+    loginFormModalRef.current?.showModal();
   }
 
   function closeSigninModal() {
-    signinModalRef.current?.close();
+    loginFormModalRef.current?.close();
   }
 
   async function signup(email: string, password: string) {
@@ -102,8 +102,8 @@ export default function useSetupUserCtx() {
     user,
     isLoading,
     errors,
-    signinModalRef,
-    showSigninModal,
+    loginFormModalRef,
+    showLoginFormModal,
     signup,
     signin,
     signout,

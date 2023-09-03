@@ -1,6 +1,6 @@
 import Header from "./components/Header";
 import { Outlet } from "react-router-dom";
-import SigninModal from "./components/SigninModal";
+import LoginFormModal from "./components/LoginFormModal";
 import { useSetupUserCtx, UserContext } from "./common/user";
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
             <Outlet />
           </div>
         </div>
-        <SigninModal />
+        <LoginFormModal />
       </div>
     </UserContext.Provider>
   );
