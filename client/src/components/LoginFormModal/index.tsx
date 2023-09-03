@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../../common/user";
 import { useForm } from "react-hook-form";
 import TextInput from "../TextInput";
+import Loader from "../Loader";
 
 enum Mode {
   Signup,
@@ -100,7 +101,7 @@ export default function LoginFormModal() {
               disabled={userCtx.isLoading}
             >
               {userCtx.isLoading ? (
-                <span className="loading" />
+                <Loader />
               ) : mode === Mode.Signup ? (
                 "Sign up"
               ) : (
