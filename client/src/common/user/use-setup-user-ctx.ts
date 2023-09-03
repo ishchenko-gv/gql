@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { User, UserCtx } from "./types";
+import { User, UserApiError, UserCtx } from "./types";
 
 export default function useSetupUserCtx() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<UserApiError[]>([]);
   const loginFormModalRef = useRef<HTMLDialogElement>(null);
 
   function showLoginFormModal() {
@@ -17,6 +17,8 @@ export default function useSetupUserCtx() {
 
   async function signup(email: string, password: string) {
     setIsLoading(true);
+    setErrors([]);
+
     let res;
 
     try {
@@ -35,18 +37,31 @@ export default function useSetupUserCtx() {
       console.error(err);
     }
 
-    if (res && !res.ok) {
-      setErrors((await res.json()).errors);
+    const json = await res?.json();
+
+    if (!res?.ok) {
+      if (json?.errors) {
+        setErrors(json.errors || []);
+      }
+
+      setIsLoading(false);
+
+      return;
     }
 
+    setUser(json);
+    closeLoginFormModal();
     setIsLoading(false);
   }
 
   async function signin(email: string, password: string) {
     setIsLoading(true);
+    setErrors([]);
+
+    let res;
 
     try {
-      const res = await fetch("http://localhost:5005/auth/signin", {
+      res = await fetch("http://localhost:5005/auth/signin", {
         method: "POST",
         body: JSON.stringify({
           email,
@@ -57,19 +72,30 @@ export default function useSetupUserCtx() {
         },
         credentials: "include",
       });
-
-      setUser(await res.json());
-      closeLoginFormModal();
     } catch (err) {
       console.error(err);
     }
 
+    const json = await res?.json();
+
+    if (!res?.ok) {
+      if (json?.errors) {
+        setErrors(json.errors || []);
+      }
+
+      setIsLoading(false);
+
+      return;
+    }
+
+    setUser(json);
+    closeLoginFormModal();
     setIsLoading(false);
-    setErrors([]);
   }
 
   async function signout() {
     setIsLoading(true);
+    setErrors([]);
 
     try {
       await fetch("http://localhost:5005/auth/signout", {

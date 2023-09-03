@@ -17,6 +17,8 @@ export default function LoginFormModal() {
   const [mode, setMode] = useState(Mode.Signup);
   const userCtx = useContext(UserContext);
 
+  console.log(userCtx.errors);
+
   const {
     register,
     handleSubmit,
@@ -106,6 +108,13 @@ export default function LoginFormModal() {
               )}
             </button>
           </div>
+          {!!userCtx.errors.length && (
+            <ul className="mt-4">
+              {userCtx.errors.map((error) => (
+                <li className="text-error">{error.message}</li>
+              ))}
+            </ul>
+          )}
         </form>
       </div>
       <form method="dialog" className="modal-backdrop">
