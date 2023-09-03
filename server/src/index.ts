@@ -1,22 +1,23 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import http from "http";
 import express from "express";
 import session, { Store } from "express-session";
 import flash from "connect-flash";
 import cors from "cors";
 import bodyParser from "body-parser";
+import passport from "passport";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { connectDB, getSessionStore } from "./config/db";
 import "colors";
-import dotenv from "dotenv";
 
 import { authRouter, setupAuthStrategies } from "./components/user";
 import author from "./components/author";
 import book from "./components/book";
-import passport from "passport";
 
-dotenv.config();
 await connectDB();
 
 const queryTypeDefs = `#graphql
@@ -59,7 +60,7 @@ await apolloServer.start();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 app.use(flash());
 
 app.use(

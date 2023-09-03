@@ -3,6 +3,7 @@ import { Document, Schema, model } from "mongoose";
 export interface UserDocument extends Document {
   email: string;
   hashedPassword: string;
+  googleId: string;
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -13,7 +14,9 @@ const userSchema = new Schema<UserDocument>(
     },
     hashedPassword: {
       type: String,
-      required: true,
+    },
+    googleId: {
+      type: String,
     },
   },
   {
