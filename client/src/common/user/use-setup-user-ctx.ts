@@ -93,6 +93,15 @@ export default function useSetupUserCtx() {
     setIsLoading(false);
   }
 
+  async function signupGoogle() {
+    fetch("http://localhost:5005/auth/google", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+  }
+
   async function signout() {
     setIsLoading(true);
     setErrors([]);
@@ -132,6 +141,7 @@ export default function useSetupUserCtx() {
     showLoginFormModal,
     signup,
     signin,
+    signupGoogle,
     signout,
   } as UserCtx;
 }

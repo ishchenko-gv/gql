@@ -17,5 +17,6 @@ export type UserCtx = {
   showLoginFormModal: () => void;
   signup: (email: string, password: string) => Promise<void>;
   signin: (email: string, password: string) => Promise<void>;
+  signupGoogle: () => Promise<void>;
   signout: () => Promise<void>;
 };

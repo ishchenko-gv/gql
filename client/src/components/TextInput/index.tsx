@@ -10,7 +10,7 @@ const TextInput = forwardRef<HTMLInputElement, Props>((props, ref) => {
 
   return (
     <div>
-      <label htmlFor={id} className="block">
+      <label htmlFor={id} className="block text-gray-500">
         {label}
       </label>
       <input
