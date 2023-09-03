@@ -11,7 +11,7 @@ export default function useSetupUserCtx() {
     loginFormModalRef.current?.showModal();
   }
 
-  function closeSigninModal() {
+  function closeLoginFormModal() {
     loginFormModalRef.current?.close();
   }
 
@@ -59,7 +59,7 @@ export default function useSetupUserCtx() {
       });
 
       setUser(await res.json());
-      closeSigninModal();
+      closeLoginFormModal();
     } catch (err) {
       console.error(err);
     }

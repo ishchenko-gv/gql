@@ -44,13 +44,13 @@ export default function LoginFormModal() {
             className={`tab ${mode === Mode.Signup ? "tab-active" : ""} flex-1`}
             onClick={() => setMode(Mode.Signup)}
           >
-            Sign up
+            I'm a new user
           </a>
           <a
             className={`tab ${mode === Mode.Signin ? "tab-active" : ""} flex-1`}
             onClick={() => setMode(Mode.Signin)}
           >
-            Sign in
+            I have an account
           </a>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -92,8 +92,18 @@ export default function LoginFormModal() {
             />
           </div>
           <div className="mt-4">
-            <button type="submit" className="btn w-full">
-              {mode === Mode.Signup ? "Sign up" : "Sign in"}
+            <button
+              type="submit"
+              className="btn w-full"
+              disabled={userCtx.isLoading}
+            >
+              {userCtx.isLoading ? (
+                <span className="loading" />
+              ) : mode === Mode.Signup ? (
+                "Sign up"
+              ) : (
+                "Sign in"
+              )}
             </button>
           </div>
         </form>
