@@ -1,4 +1,5 @@
-import { Book, Author } from "../../common/types";
+import { Author } from "../../common/author/types";
+import { Book } from "../../common/book/types";
 import { Link } from "react-router-dom";
 
 type Props = {
@@ -14,7 +15,7 @@ export default function BookCard(props: Props) {
       card
       shadow-md
      bg-gray-800
-      hover:-translate-y-2 
+      hover:-translate-y-1 
       hover:shadow-2xl
       transition-all 
       duration-200

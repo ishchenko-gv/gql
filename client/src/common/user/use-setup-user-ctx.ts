@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { User } from "../types";
+import { User, UserCtx } from "./types";
 
 export default function useSetupUserCtx() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const [errors, setErrors] = useState([]);
   const signinModalRef = useRef<HTMLDialogElement>(null);
 
   function showSigninModal() {
@@ -12,6 +13,33 @@ export default function useSetupUserCtx() {
 
   function closeSigninModal() {
     signinModalRef.current?.close();
+  }
+
+  async function signup(email: string, password: string) {
+    setIsLoading(true);
+    let res;
+
+    try {
+      res = await fetch("http://localhost:5005/auth/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
+    if (res && !res.ok) {
+      setErrors((await res.json()).errors);
+    }
+
+    setIsLoading(false);
   }
 
   async function signin(email: string, password: string) {
@@ -37,6 +65,7 @@ export default function useSetupUserCtx() {
     }
 
     setIsLoading(false);
+    setErrors([]);
   }
 
   async function signout() {
@@ -72,9 +101,11 @@ export default function useSetupUserCtx() {
   return {
     user,
     isLoading,
+    errors,
     signinModalRef,
     showSigninModal,
+    signup,
     signin,
     signout,
-  };
+  } as UserCtx;
 }

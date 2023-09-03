@@ -1,4 +1,4 @@
-import { Author } from "../../common/types";
+import { Author } from "../../common/author/types";
 
 type Props = {
   author: Author;
@@ -13,7 +13,7 @@ export default function AuthorCard(props: Props) {
       card 
       bg-gray-800
       shadow-lg 
-      hover:-translate-y-2 
+      hover:-translate-y-1 
       hover:shadow-2xl 
       hover:text-accent
       transition-all 

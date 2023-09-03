@@ -17,7 +17,7 @@ export default function EntityDescription(props: Props) {
       />
       <div className="ml-8">
         <h2 className="text-4xl">{title}</h2>
-        <p className="mt-8">{description}</p>
+        <p className="mt-8 text-xl leading-8">{description}</p>
       </div>
     </div>
   );

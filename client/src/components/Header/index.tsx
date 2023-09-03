@@ -11,7 +11,9 @@ export default function Header() {
   const { pathname } = useLocation();
 
   const getClassNames = (path: string) =>
-    `${pathname.startsWith(path) ? "link-accent" : ""}`;
+    `${
+      pathname.startsWith(path) ? "text-accent" : ""
+    } text-lg hover:text-accent`;
 
   return (
     <header>
