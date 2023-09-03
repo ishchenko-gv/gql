@@ -1,6 +1,7 @@
 import http from "http";
 import express from "express";
 import session, { Store } from "express-session";
+import flash from "connect-flash";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { ApolloServer } from "@apollo/server";
@@ -59,6 +60,7 @@ await apolloServer.start();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+app.use(flash());
 
 app.use(
   session({
