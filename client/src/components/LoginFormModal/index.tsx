@@ -1,7 +1,12 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../../common/user";
 import { useForm } from "react-hook-form";
 import TextInput from "../TextInput";
+
+enum Mode {
+  Signup,
+  Signin,
+}
 
 type LoginForm = {
   email: string;
@@ -9,6 +14,7 @@ type LoginForm = {
 };
 
 export default function LoginFormModal() {
+  const [mode, setMode] = useState(Mode.Signup);
   const userCtx = useContext(UserContext);
 
   const {
@@ -17,7 +23,13 @@ export default function LoginFormModal() {
     formState: { errors },
   } = useForm<LoginForm>();
 
-  console.log(errors);
+  function onSubmit({ email, password }: LoginForm) {
+    if (mode === Mode.Signup) {
+      userCtx.signup(email, password);
+    } else {
+      userCtx.signin(email, password);
+    }
+  }
 
   return (
     <dialog ref={userCtx.loginFormModalRef} className="modal">
@@ -27,15 +39,28 @@ export default function LoginFormModal() {
             ✕
           </button>
         </form>
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
-          <h3 className="font-bold text-lg">Signin</h3>
+        <div className="tabs tabs-boxed flex">
+          <a
+            className={`tab ${mode === Mode.Signup ? "tab-active" : ""} flex-1`}
+            onClick={() => setMode(Mode.Signup)}
+          >
+            Sign up
+          </a>
+          <a
+            className={`tab ${mode === Mode.Signin ? "tab-active" : ""} flex-1`}
+            onClick={() => setMode(Mode.Signin)}
+          >
+            Sign in
+          </a>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-4">
             <TextInput
               {...register("email", {
                 required: true,
                 pattern: {
                   // eslint-disable-next-line
-                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
                   message: "Incorrect email",
                 },
               })}
@@ -60,13 +85,15 @@ export default function LoginFormModal() {
               type="password"
               name="password"
               label="password"
-              autoComplete="current-password"
+              autoComplete={
+                mode === Mode.Signup ? "new-password" : "current-password"
+              }
               errorMessage={errors.password?.message}
             />
           </div>
           <div className="mt-4">
             <button type="submit" className="btn w-full">
-              Signin
+              {mode === Mode.Signup ? "Sign up" : "Sign in"}
             </button>
           </div>
         </form>
