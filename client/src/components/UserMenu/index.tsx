@@ -16,7 +16,7 @@ export default function UserMenu() {
         tabIndex={0}
         className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
       >
-        <div className="ml-3">{userCtx.user?.email}</div>
+        <div className="ml-3 text-neutral-500">{userCtx.user?.email}</div>
         <ul className="mt-2">
           <li>
             <button type="button" onClick={userCtx.signout}>

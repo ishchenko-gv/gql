@@ -11,11 +11,11 @@ export default function Header() {
   const { pathname } = useLocation();
 
   const getClassNames = (path: string) =>
-    `${pathname.startsWith(path) ? "link-secondary" : ""}`;
+    `${pathname.startsWith(path) ? "link-accent" : ""}`;
 
   return (
     <header>
-      <nav className="container flex">
+      <nav className="container flex justify-between">
         <div>
           <Link to="/">
             <span style={{ fontSize: "32px" }}>
@@ -23,7 +23,7 @@ export default function Header() {
             </span>
           </Link>
         </div>
-        <ul className="flex ml-40 self-center">
+        <ul className="flex self-center">
           <li>
             <Link to="/books/1">
               <span className={getClassNames("/books")}>Books</span>
@@ -35,7 +35,16 @@ export default function Header() {
             </Link>
           </li>
         </ul>
-        <div className="ml-auto text-2xl leading-reset self-center">
+        <div
+          className="
+            flex 
+            items-center 
+            justify-center 
+            text-2xl 
+            leading-reset 
+            self-center
+            w-8"
+        >
           {userCtx.isLoading ? (
             <Loader />
           ) : userCtx.user ? (
