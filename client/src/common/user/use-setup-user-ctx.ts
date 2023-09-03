@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { User } from "../types";
 
-export default function useUserCtx() {
+export default function useSetupUserCtx() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const signinModalRef = useRef<HTMLDialogElement>(null);

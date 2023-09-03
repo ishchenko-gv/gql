@@ -22,7 +22,7 @@ export default function BookCard(props: Props) {
     >
       <figure>
         <Link to={`/book/${_id}`}>
-          <img src={coverImgUrl} width="240" height="320" />
+          <img src={coverImgUrl} width="224" height="298" />
         </Link>
       </figure>
       <div className="card-body">

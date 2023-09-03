@@ -1,13 +1,13 @@
 import Header from "./components/Header";
 import { Outlet } from "react-router-dom";
 import SigninModal from "./components/SigninModal";
-import { useUser, UserContext } from "./common/user";
+import { useSetupUserCtx, UserContext } from "./common/user";
 
 function App() {
-  const user = useUser();
+  const userCtx = useSetupUserCtx();
 
   return (
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={userCtx}>
       <div>
         <div className="bg-gray-800 py-8">
           <Header />
