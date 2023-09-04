@@ -12,6 +12,7 @@ import BooksPage from "./pages/BooksPage";
 import BookPage from "./pages/BookPage";
 import AuthorsPage from "./pages/AuthorsPage";
 import AuthorPage from "./pages/AuthorPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const client = new ApolloClient({
   uri: "http://localhost:5005/graphql",
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/profile",
+        element: <ProfilePage />,
+      },
       {
         path: "authors",
         element: <AuthorsPage />,

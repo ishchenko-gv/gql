@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import "express-session";
 import { UserDocument } from "../components/user/model";
 
 export {};
@@ -17,5 +18,13 @@ declare global {
       _id: ObjectId;
       email: string;
     }
+  }
+}
+
+declare module "express-session" {
+  export interface SessionData {
+    passport: {
+      user: string;
+    };
   }
 }

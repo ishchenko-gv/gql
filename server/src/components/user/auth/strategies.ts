@@ -16,7 +16,13 @@ export default function setupAuthStrategies() {
             });
           }
 
-          bcrypt.compare(password, user.hashedPassword, (err, isMatch) => {
+          if (!user.hashedPassword) {
+            return done(null, false, {
+              message: "Password has not been set, try to sign up with Google",
+            });
+          }
+
+          bcrypt.compare(password, user.hashedPassword!, (err, isMatch) => {
             if (err) throw err;
 
             if (isMatch) {
@@ -58,33 +64,24 @@ export default function setupAuthStrategies() {
             },
           ],
         });
+
+        if (!user) {
+          user = new User({ email });
+        }
+
+        if (!user.googleId) user.googleId = profile.id;
+
+        if (!user.profile.firstName)
+          user.profile.firstName = profile._json.given_name;
+
+        if (!user.profile.lastName)
+          user.profile.lastName = profile._json.family_name;
+
+        await user.save();
+
+        done(null, user);
       } catch (err) {
         done(err);
-      }
-
-      if (!user) {
-        try {
-          const newUser = new User({
-            email,
-            googleId: profile.id,
-          });
-
-          await newUser.save();
-        } catch (err) {
-          done(err);
-        }
-      } else if (user.email === email && !user.googleId) {
-        try {
-          user.googleId = profile.id;
-
-          await user.save();
-
-          done(null, user);
-        } catch (err) {
-          done(err);
-        }
-      } else {
-        done(null, user);
       }
     }
   );

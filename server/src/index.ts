@@ -6,6 +6,7 @@ import express from "express";
 import session, { Store } from "express-session";
 import flash from "connect-flash";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import passport from "passport";
 import { ApolloServer } from "@apollo/server";
@@ -14,14 +15,16 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import { connectDB, getSessionStore } from "./config/db";
 import "colors";
 
-import { authRouter, setupAuthStrategies } from "./components/user";
+import user, { setupAuthStrategies, authRouter } from "./components/user";
 import author from "./components/author";
 import book from "./components/book";
+import { gqlCtx } from "./types";
 
 await connectDB();
 
 const queryTypeDefs = `#graphql
   type Query {
+    userProfile: UserProfile
     author(id: ID!): Author
     authors: [Author!]!
     book(id: ID!): Book
@@ -39,9 +42,10 @@ const app = express();
 const httpServer = http.createServer(app);
 
 const apolloServer = new ApolloServer({
-  typeDefs: [queryTypeDefs, author.typeDefs, book.typeDefs],
+  typeDefs: [queryTypeDefs, user.typeDefs, author.typeDefs, book.typeDefs],
   resolvers: {
     Query: {
+      userProfile: user.resolvers.userProfile,
       author: author.resolvers.author,
       authors: author.resolvers.authors,
       book: book.resolvers.book,
@@ -58,6 +62,7 @@ const apolloServer = new ApolloServer({
 
 await apolloServer.start();
 
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
@@ -77,7 +82,16 @@ setupAuthStrategies();
 app.use(passport.authenticate("session"));
 
 app.use("/auth", authRouter);
-app.use("/graphql", expressMiddleware(apolloServer));
+app.use(
+  "/graphql",
+  expressMiddleware(apolloServer, {
+    context: async ({ req }) => {
+      return {
+        userId: (req.session as any).passport?.user,
+      } as gqlCtx;
+    },
+  })
+);
 
 await new Promise((resolve) =>
   httpServer.listen({ port: process.env.PORT }, () => {
