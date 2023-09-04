@@ -1,18 +1,23 @@
-import { ComponentPropsWithRef, forwardRef } from "react";
+import { ComponentPropsWithRef, ReactNode, forwardRef } from "react";
 
 type Props = ComponentPropsWithRef<"input"> & {
   label: string;
   errorMessage?: string;
+  supportFields?: ReactNode[];
 };
 
-const TextInput = forwardRef<HTMLInputElement, Props>((props, ref) => {
-  const { id, label, errorMessage, ...restProps } = props;
+const TextInput = forwardRef<HTMLInputElement, Props>(function TextInput(
+  props,
+  ref
+) {
+  const { id, label, errorMessage, supportFields = [], ...restProps } = props;
 
   return (
     <div>
       <label htmlFor={id} className="block text-gray-500">
         {label}
       </label>
+      {supportFields}
       <input
         ref={ref}
         {...restProps}

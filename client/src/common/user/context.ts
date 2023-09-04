@@ -7,6 +7,7 @@ export default createContext<UserCtx>({
   errors: [],
   loginFormModalRef: createRef(),
   showLoginFormModal() {},
+  isPreviouslyLoggedIn: false,
   signup: async () => {},
   signin: async () => {},
   signout: async () => {},

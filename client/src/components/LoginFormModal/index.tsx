@@ -15,10 +15,15 @@ type LoginForm = {
 };
 
 export default function LoginFormModal() {
-  const [mode, setMode] = useState(Mode.Signup);
   const [isEmailSignupVisible, setIsEmailSignupVisible] = useState(false);
   const emailInputRef = useRef<HTMLInputElement | null>(null);
   const userCtx = useContext(UserContext);
+
+  const [mode, setMode] = useState(() => {
+    if (userCtx.isPreviouslyLoggedIn) return Mode.Signin;
+
+    return Mode.Signup;
+  });
 
   const {
     register,
@@ -107,7 +112,7 @@ export default function LoginFormModal() {
                   type="email"
                   name="email"
                   label="email"
-                  autoComplete="email"
+                  autoComplete="username"
                   errorMessage={errors.email?.message}
                 />
               </div>
@@ -123,6 +128,14 @@ export default function LoginFormModal() {
                     mode === Mode.Signup ? "new-password" : "current-password"
                   }
                   errorMessage={errors.password?.message}
+                  supportFields={[
+                    <input
+                      key="1"
+                      type="text"
+                      autoComplete="username"
+                      hidden
+                    />,
+                  ]}
                 />
               </div>
               <div className="mt-4">
@@ -143,7 +156,9 @@ export default function LoginFormModal() {
               {!!userCtx.errors.length && (
                 <ul className="mt-4">
                   {userCtx.errors.map((error) => (
-                    <li className="text-error">{error.message}</li>
+                    <li key={error.message} className="text-error">
+                      {error.message}
+                    </li>
                   ))}
                 </ul>
               )}

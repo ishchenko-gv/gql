@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { User, UserApiError, UserCtx } from "./types";
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "../../utils/local-storage";
 
 export default function useSetupUserCtx() {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +17,14 @@ export default function useSetupUserCtx() {
 
   function closeLoginFormModal() {
     loginFormModalRef.current?.close();
+  }
+
+  function markLoggingIn() {
+    setLocalStorageItem("previously-logged-in", "1");
+  }
+
+  function checkLoggingInMark() {
+    return getLocalStorageItem("previously-logged-in") === "1";
   }
 
   async function signup(email: string, password: string) {
@@ -52,6 +64,7 @@ export default function useSetupUserCtx() {
     setUser(json);
     closeLoginFormModal();
     setIsLoading(false);
+    markLoggingIn();
   }
 
   async function signin(email: string, password: string) {
@@ -91,15 +104,7 @@ export default function useSetupUserCtx() {
     setUser(json);
     closeLoginFormModal();
     setIsLoading(false);
-  }
-
-  async function signupGoogle() {
-    fetch("http://localhost:5005/auth/google", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
+    markLoggingIn();
   }
 
   async function signout() {
@@ -118,6 +123,7 @@ export default function useSetupUserCtx() {
     }
 
     setIsLoading(false);
+    markLoggingIn();
   }
 
   useEffect(() => {
@@ -133,15 +139,17 @@ export default function useSetupUserCtx() {
       .finally(() => setIsLoading(false));
   }, []);
 
+  const isPreviouslyLoggedIn = checkLoggingInMark();
+
   return {
     user,
     isLoading,
     errors,
     loginFormModalRef,
     showLoginFormModal,
+    isPreviouslyLoggedIn,
     signup,
     signin,
-    signupGoogle,
     signout,
   } as UserCtx;
 }
