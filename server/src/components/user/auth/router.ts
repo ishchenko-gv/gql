@@ -83,7 +83,6 @@ router.get("/unauthorized", (req, res) => {
 });
 
 router.get("/me", (req, res) => {
-  console.log(req.session);
   res.json({
     _id: (req.user as UserDocument)?._id,
     email: (req.user as UserDocument)?.email,

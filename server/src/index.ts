@@ -9,6 +9,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import passport from "passport";
+import morgan from "morgan";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
@@ -22,7 +23,7 @@ import { gqlCtx } from "./types";
 
 await connectDB();
 
-const queryTypeDefs = `#graphql
+const rootTypeDefs = `#graphql
   type Query {
     userProfile: UserProfile
     author(id: ID!): Author
@@ -42,7 +43,7 @@ const app = express();
 const httpServer = http.createServer(app);
 
 const apolloServer = new ApolloServer({
-  typeDefs: [queryTypeDefs, user.typeDefs, author.typeDefs, book.typeDefs],
+  typeDefs: [rootTypeDefs, user.typeDefs, author.typeDefs, book.typeDefs],
   resolvers: {
     Query: {
       userProfile: user.resolvers.userProfile,
@@ -62,6 +63,7 @@ const apolloServer = new ApolloServer({
 
 await apolloServer.start();
 
+app.use(morgan("tiny"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -82,6 +84,7 @@ setupAuthStrategies();
 app.use(passport.authenticate("session"));
 
 app.use("/auth", authRouter);
+
 app.use(
   "/graphql",
   expressMiddleware(apolloServer, {

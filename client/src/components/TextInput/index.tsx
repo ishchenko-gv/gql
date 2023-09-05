@@ -4,13 +4,21 @@ type Props = ComponentPropsWithRef<"input"> & {
   label: string;
   errorMessage?: string;
   supportFields?: ReactNode[];
+  isDisabled?: boolean;
 };
 
 const TextInput = forwardRef<HTMLInputElement, Props>(function TextInput(
   props,
   ref
 ) {
-  const { id, label, errorMessage, supportFields = [], ...restProps } = props;
+  const {
+    id,
+    label,
+    errorMessage,
+    supportFields = [],
+    isDisabled = false,
+    ...restProps
+  } = props;
 
   return (
     <div>
@@ -25,6 +33,7 @@ const TextInput = forwardRef<HTMLInputElement, Props>(function TextInput(
         className={`input input-bordered mt-2 w-full ${
           errorMessage ? "input-error" : ""
         }`}
+        disabled={isDisabled}
       />
       {errorMessage && (
         <label htmlFor={id} className="block mt-2 text-error">

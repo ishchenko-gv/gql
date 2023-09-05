@@ -2,21 +2,31 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
 import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import ProfilePage from "./pages/ProfilePage";
 import BooksPage from "./pages/BooksPage";
 import BookPage from "./pages/BookPage";
 import AuthorsPage from "./pages/AuthorsPage";
 import AuthorPage from "./pages/AuthorPage";
-import ProfilePage from "./pages/ProfilePage";
+
+const link = createHttpLink({
+  uri: "http://localhost:5005/graphql",
+  credentials: "include",
+});
 
 const client = new ApolloClient({
-  uri: "http://localhost:5005/graphql",
   cache: new InMemoryCache(),
+  link,
 });
 
 const router = createBrowserRouter([
