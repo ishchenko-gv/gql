@@ -16,7 +16,11 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import { connectDB, getSessionStore } from "./config/db";
 import "colors";
 
-import user, { setupAuthStrategies, authRouter } from "./components/user";
+import user, {
+  setupAuthStrategies,
+  authRouter,
+  avatarRouter,
+} from "./components/user";
 import author from "./components/author";
 import book from "./components/book";
 import { gqlCtx } from "./types";
@@ -84,6 +88,7 @@ setupAuthStrategies();
 app.use(passport.authenticate("session"));
 
 app.use("/auth", authRouter);
+app.use("/user", avatarRouter);
 
 app.use(
   "/graphql",
