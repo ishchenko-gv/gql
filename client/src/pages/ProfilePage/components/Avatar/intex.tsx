@@ -12,15 +12,17 @@ export default function Avatar() {
 
     if (!form) return;
 
+    console.log(form.enctype);
+
     const formData = new FormData(form);
 
     await fetch(form.action, {
       method: form.method,
-      body: JSON.stringify(formData),
+      body: formData,
       credentials: "include",
-      headers: {
-        "Content-Type": form.enctype,
-      },
+      // headers: {
+      //   "Content-Type": form.enctype,
+      // },
     });
   };
 
@@ -35,6 +37,7 @@ export default function Avatar() {
         <input
           {...register("avatar")}
           type="file"
+          name="avatar"
           multiple
           className="file-input w-full"
           onDrop={console.log}

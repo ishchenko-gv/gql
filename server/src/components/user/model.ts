@@ -54,7 +54,10 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       default: null,
     },
-    profile: profileSchema,
+    profile: {
+      type: profileSchema,
+      default: {},
+    },
   },
   {
     timestamps: true,

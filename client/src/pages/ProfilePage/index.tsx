@@ -17,7 +17,6 @@ const GET_USER_PROFILE = gql`
 type FormFields = {
   firstName: string;
   lastName: string;
-  avatar: FileList;
 };
 
 export default function ProfilePage() {
@@ -51,10 +50,14 @@ export default function ProfilePage() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <div>
-          <TextInput value={userCtx.user?._id} label="id" isDisabled />
+          <TextInput value={userCtx.user?._id || ""} label="id" isDisabled />
         </div>
         <div className="mt-4">
-          <TextInput value={userCtx.user?.email} label="email" isDisabled />
+          <TextInput
+            value={userCtx.user?.email || ""}
+            label="email"
+            isDisabled
+          />
         </div>
         <div className="mt-4">
           <TextInput {...register("firstName")} label="first name" />

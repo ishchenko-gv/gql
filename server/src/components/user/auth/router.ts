@@ -84,8 +84,8 @@ router.get("/unauthorized", (req, res) => {
 
 router.get("/me", (req, res) => {
   res.json({
-    _id: (req.user as UserDocument)?._id,
-    email: (req.user as UserDocument)?.email,
+    _id: req.user?._id,
+    email: req.user?.email,
   });
 });
 

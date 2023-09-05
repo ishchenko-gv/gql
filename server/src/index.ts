@@ -13,21 +13,23 @@ import morgan from "morgan";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { connectDB, getSessionStore } from "./config/db";
+import { connectDB, getSessionStore } from "./infra/db";
 import "colors";
 
 import user, {
-  setupAuthStrategies,
   authRouter,
   avatarRouter,
+  localAuthStrategy,
+  googleAuthStrategy,
 } from "./components/user";
 import author from "./components/author";
 import book from "./components/book";
 import { gqlCtx } from "./types";
 
-await connectDB();
+async function start() {
+  await connectDB();
 
-const rootTypeDefs = `#graphql
+  const rootTypeDefs = `#graphql
   type Query {
     userProfile: UserProfile
     author(id: ID!): Author
@@ -43,67 +45,70 @@ const rootTypeDefs = `#graphql
   }
 `;
 
-const app = express();
-const httpServer = http.createServer(app);
+  const app = express();
+  const httpServer = http.createServer(app);
 
-const apolloServer = new ApolloServer({
-  typeDefs: [rootTypeDefs, user.typeDefs, author.typeDefs, book.typeDefs],
-  resolvers: {
-    Query: {
-      userProfile: user.resolvers.userProfile,
-      author: author.resolvers.author,
-      authors: author.resolvers.authors,
-      book: book.resolvers.book,
-      books: book.resolvers.books,
-      booksByAuthor: book.resolvers.booksByAuthor,
+  const apolloServer = new ApolloServer({
+    typeDefs: [rootTypeDefs, user.typeDefs, author.typeDefs, book.typeDefs],
+    resolvers: {
+      Query: {
+        userProfile: user.resolvers.userProfile,
+        author: author.resolvers.author,
+        authors: author.resolvers.authors,
+        book: book.resolvers.book,
+        books: book.resolvers.books,
+        booksByAuthor: book.resolvers.booksByAuthor,
+      },
+      Mutation: {
+        addAuthor: author.resolvers.addAuthor,
+        addBook: book.resolvers.addBook,
+      },
     },
-    Mutation: {
-      addAuthor: author.resolvers.addAuthor,
-      addBook: book.resolvers.addBook,
-    },
-  },
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-});
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
 
-await apolloServer.start();
+  await apolloServer.start();
 
-app.use(morgan("tiny"));
-app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
-app.use(flash());
+  app.use(morgan("tiny"));
+  app.use(cookieParser());
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+  app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
+  app.use(flash());
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET!,
-    resave: false,
-    saveUninitialized: false,
-    store: getSessionStore() as unknown as Store,
-  })
-);
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET!,
+      resave: false,
+      saveUninitialized: false,
+      store: getSessionStore() as unknown as Store,
+    })
+  );
 
-setupAuthStrategies();
+  passport.use(localAuthStrategy);
+  passport.use(googleAuthStrategy);
+  app.use(passport.authenticate("session"));
 
-app.use(passport.authenticate("session"));
+  app.use("/auth", authRouter);
+  app.use("/user", avatarRouter);
 
-app.use("/auth", authRouter);
-app.use("/user", avatarRouter);
+  app.use(
+    "/graphql",
+    expressMiddleware(apolloServer, {
+      context: async ({ req }) => {
+        return {
+          userId: (req.session as any).passport?.user,
+        } as gqlCtx;
+      },
+    })
+  );
 
-app.use(
-  "/graphql",
-  expressMiddleware(apolloServer, {
-    context: async ({ req }) => {
-      return {
-        userId: (req.session as any).passport?.user,
-      } as gqlCtx;
-    },
-  })
-);
+  await new Promise((resolve) =>
+    httpServer.listen({ port: process.env.PORT }, () => {
+      console.log(`Server is running on http://localhost:${process.env.PORT}`);
+      resolve(null);
+    })
+  );
+}
 
-await new Promise((resolve) =>
-  httpServer.listen({ port: process.env.PORT }, () => {
-    console.log(`Server is running on http://localhost:${process.env.PORT}`);
-    resolve(null);
-  })
-);
+start();

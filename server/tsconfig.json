@@ -4,11 +4,12 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "rootDirs": ["src"],
     "outDir": "dist",
-    "lib": ["es2020"],
-    "target": "es2020",
-    "module": "esnext",
+    "lib": ["es2021"],
+    "target": "es2021",
+    "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "types": ["node"]
-  }
+  },
+  "files": ["./src/index.ts", "./src/types/environment.d.ts"],
 }
